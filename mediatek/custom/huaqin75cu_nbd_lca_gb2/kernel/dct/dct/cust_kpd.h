@@ -64,9 +64,8 @@
 /* HW keycode [0 ~ 71] -> Linux keycode */
 #define KPD_INIT_KEYMAP()	\
 {	\
-	[0] = KEY_CAMERA,		\
-	[1] = KEY_VOLUMEUP,		\
-	[2] = KEY_VOLUMEDOWN,		\
+	[0] = KEY_VOLUMEUP,		\
+	[5] = KEY_VOLUMEDOWN,		\
 	[9] = KEY_HOME,		\
 	[10] = KEY_MENU,		\
 	[18] = KEY_BACK,		\
@@ -79,14 +78,14 @@
 #define KPD_PWRKEY_GPIO_DIN  0
 
 #define  KPD_DL_KEY1  8    /* KEY_POWER */
-#define KPD_DL_KEY2  1    /* KEY_VOLUMEUP */
-#define KPD_DL_KEY3  2    /* KEY_VOLUMEDOWN */
+#define KPD_DL_KEY2  0    /* KEY_VOLUMEUP */
+#define KPD_DL_KEY3  5    /* KEY_VOLUMEDOWN */
 /*****************************************************************/
 /*******************Uboot Customation***************************/
 /*****************************************************************/
 #define MT65XX_META_KEY  9    /* KEY_HOME */
-#define MT65XX_RECOVERY_KEY  1    /* KEY_VOLUMEUP */
-#define MT65XX_FACTORY_KEY  2    /* KEY_VOLUMEDOWN */
+#define MT65XX_RECOVERY_KEY  0    /* KEY_VOLUMEUP */
+#define MT65XX_FACTORY_KEY  5    /* KEY_VOLUMEDOWN */
 /*****************************************************************/
 /*******************factory Customation***************************/
 /*****************************************************************/
