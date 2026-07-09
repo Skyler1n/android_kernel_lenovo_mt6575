@@ -553,11 +553,11 @@
 #define GPIO67_DATAINV   GPIO_DATA_UNINV
 
 //Configureation for Pin 68
-#define GPIO68_MODE      GPIO_MODE_00
-#define GPIO68_DIR       GPIO_DIR_IN
-#define GPIO68_PULLEN    GPIO_PULL_ENABLE
+#define GPIO68_MODE      GPIO_MODE_01
+#define GPIO68_DIR       GPIO_DIR_OUT
+#define GPIO68_PULLEN    GPIO_PULL_DISABLE
 #define GPIO68_PULL      GPIO_PULL_DOWN
-#define GPIO68_DATAOUT   GPIO_OUT_ZERO
+#define GPIO68_DATAOUT   GPIO_OUT_ONE
 #define GPIO68_DATAINV   GPIO_DATA_UNINV
 
 //Configureation for Pin 69
@@ -1867,5 +1867,4 @@
 
 
 #endif /* __CUST_GPIO_BOOT_H__ */
-
 

@@ -55,6 +55,9 @@
 #define MIN_FRE_OLD_PWM 32 // the min frequence when use old mode pwm by kHz
 #define PWM_DIV_NUM 8
 #define ERROR_BL_LEVEL 0xFFFFFFFF
+#if defined (CONFIG_ARCH_MT6575)
+#define A60P_LCD_BACKLIGHT_GPIO 68
+#endif
 struct nled_setting
 {
 	u8 nled_mode; //0, off; 1, on; 2, blink;
@@ -156,6 +159,16 @@ static int brightness_mapto64(int level)
         else
                 return (level >> 3) + 33;
 }
+
+#if defined (CONFIG_ARCH_MT6575)
+static void a60p_lcd_backlight_pwm_pinmux(void)
+{
+	mt_set_gpio_dir(A60P_LCD_BACKLIGHT_GPIO, GPIO_DIR_OUT);
+	mt_set_gpio_pull_enable(A60P_LCD_BACKLIGHT_GPIO, GPIO_PULL_DISABLE);
+	mt_set_gpio_out(A60P_LCD_BACKLIGHT_GPIO, GPIO_OUT_ONE);
+	mt_set_gpio_mode(A60P_LCD_BACKLIGHT_GPIO, GPIO_MODE_01);
+}
+#endif
 
 int find_time_index(int time)
 {	
@@ -296,22 +309,32 @@ static int backlight_set_pwm(int pwm_num, u32 level, u32 div)
 	pwm_setting.PWM_MODE_FIFO_REGS.IDLE_VALUE = 0;
 	pwm_setting.PWM_MODE_FIFO_REGS.GUARD_VALUE = 0;
 	pwm_setting.PWM_MODE_FIFO_REGS.STOP_BITPOS_VALUE = 63;
-	pwm_setting.PWM_MODE_FIFO_REGS.HDURATION = 4;
-	pwm_setting.PWM_MODE_FIFO_REGS.LDURATION = 4;
+	pwm_setting.PWM_MODE_FIFO_REGS.HDURATION = 0;
+	pwm_setting.PWM_MODE_FIFO_REGS.LDURATION = 0;
 	pwm_setting.PWM_MODE_FIFO_REGS.GDURATION = 0;
 	pwm_setting.PWM_MODE_FIFO_REGS.WAVE_NUM = 0;
 	
 	LEDS_DEBUG("[LED]backlight_set_pwm:duty is %d\n", level);
-    if(level>0 && level <= 32)
+    if(level>0 && level < 32)
 	{
-		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA0 =  (1 << level) - 1 ;
+		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA0 =  (1U << level) - 1 ;
 		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA1 = 0 ;
 		pwm_set_spec_config(&pwm_setting);
-	}else if(level>32 && level <=64)
+	}else if(level == 32)
+	{
+		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA0 =  0xFFFFFFFF ;
+		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA1 = 0 ;
+		pwm_set_spec_config(&pwm_setting);
+	}else if(level>32 && level < 64)
 	{
 		level -= 32;
 		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA0 =  0xFFFFFFFF ;
-		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA1 = (1 << level) - 1;
+		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA1 = (1U << level) - 1;
+		pwm_set_spec_config(&pwm_setting);
+	}else if(level == 64)
+	{
+		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA0 =  0xFFFFFFFF ;
+		pwm_setting.PWM_MODE_FIFO_REGS.SEND_DATA1 = 0xFFFFFFFF ;
 		pwm_set_spec_config(&pwm_setting);
 	}else
 	{
@@ -611,6 +634,9 @@ static int mt65xx_led_set_cust(struct cust_mt65xx_led *cust, int level)
 					mt_power_off (cust->data);
 				}else
 				{
+					#if defined (CONFIG_ARCH_MT6575)
+					a60p_lcd_backlight_pwm_pinmux();
+					#endif
 					level = brightness_mapping(tmp_level);
 					if(level == ERROR_BL_LEVEL)
 						level = brightness_mapto64(tmp_level);
@@ -1161,4 +1187,3 @@ MODULE_AUTHOR("MediaTek Inc.");
 MODULE_DESCRIPTION("LED driver for MediaTek MT65xx chip");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("leds-mt65xx");
-
