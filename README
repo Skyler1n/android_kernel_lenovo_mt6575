@@ -1,0 +1,11 @@
+export PATH=~/Your_Toolchain_PATH/
+for example /alps/prebuilt/linux-x86/toolchain/arm-linux-androideabi-4.4.x/bin
+Build Command:
+uboot
+=====
+1.$TARGET_PRODUCT=huaqin75cu_nbd_lca_gb2 make huaqin75cu_nbd_lca_gb2_confg
+2.$TARGET_PRODUCT=huaqin75cu_nbd_lca_gb2 make huaqin75cu_nbd_lca_gb2
+kernel
+======
+1. $cd $kernel directory
+2. $TARGET_PRODUCT=huaqin75cu_nbd_lca_gb2 MTK_ROOT_CUSTOM=../mediatek/custom/ make
