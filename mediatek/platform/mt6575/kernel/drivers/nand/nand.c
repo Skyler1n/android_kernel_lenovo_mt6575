@@ -388,6 +388,29 @@ bool get_device_info(u16 id, u32 ext_id, flashdev_info *pdevinfo)
     }
 
 
+    /* PATCH: fallback - match gen_FlashTable by device id only.
+     * Some production NAND lots return an ext_id that differs from the
+     * value in the table; without this the chip is rejected and /system
+     * cannot be mounted. iowidth from the id-matched entry is still used. */
+    for (index = 0; gen_FlashTable[index].id != 0; index++)
+    {
+        if (id == gen_FlashTable[index].id)
+        {
+            pdevinfo->id = gen_FlashTable[index].id;
+            pdevinfo->ext_id = gen_FlashTable[index].ext_id;
+            pdevinfo->blocksize = gen_FlashTable[index].blocksize;
+            pdevinfo->addr_cycle = gen_FlashTable[index].addr_cycle;
+            pdevinfo->iowidth = gen_FlashTable[index].iowidth;
+            pdevinfo->timmingsetting = gen_FlashTable[index].timmingsetting;
+            pdevinfo->advancedmode = gen_FlashTable[index].advancedmode;
+            pdevinfo->pagesize = gen_FlashTable[index].pagesize;
+            pdevinfo->totalsize = gen_FlashTable[index].totalsize;
+            memcpy(pdevinfo->devciename, gen_FlashTable[index].devciename, sizeof(pdevinfo->devciename));
+            printk(KERN_INFO "NAND: matched by ID only, ID:%x real_ext_id:%x (table ext_id ignored)\n", id, ext_id);
+            goto find;
+        }
+    }
+
 find:
 	if(0==pdevinfo->id)
 	{
