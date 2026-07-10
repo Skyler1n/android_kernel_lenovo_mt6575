@@ -1349,8 +1349,52 @@ no_page_table:
 EXPORT_SYMBOL(follow_page);
 
 
-#if 0 //remove to mediatek/source/drivers/m4u
+#ifdef MTK_M4U_SUPPORT
 //-- start for M4U supporting codes --//
+
+unsigned long m4u_virt_to_phys(const void *v)
+{
+	return virt_to_phys(v);
+}
+EXPORT_SYMBOL(m4u_virt_to_phys);
+
+struct page *m4u_pfn_to_page(unsigned int pfn)
+{
+	return pfn_to_page(pfn);
+}
+EXPORT_SYMBOL(m4u_pfn_to_page);
+
+unsigned int m4u_page_to_phys(struct page *page)
+{
+	return page_to_phys(page);
+}
+EXPORT_SYMBOL(m4u_page_to_phys);
+
+unsigned int m4u_user_v2p(unsigned int va)
+{
+	unsigned int page_offset = va & (PAGE_SIZE - 1);
+	pgd_t *pgd;
+	pmd_t *pmd;
+	pte_t *pte;
+
+	if (!current || !current->mm)
+		return 0;
+
+	pgd = pgd_offset(current->mm, va);
+	if (pgd_none(*pgd) || pgd_bad(*pgd))
+		return 0;
+
+	pmd = pmd_offset(pgd, va);
+	if (pmd_none(*pmd) || pmd_bad(*pmd))
+		return 0;
+
+	pte = pte_offset_map(pmd, va);
+	if (pte_present(*pte))
+		return (pte_val(*pte) & PAGE_MASK) | page_offset;
+
+	return 0;
+}
+EXPORT_SYMBOL(m4u_user_v2p);
 
 // for debug msg, low priority
 // #define MT6573M4U_DBG
