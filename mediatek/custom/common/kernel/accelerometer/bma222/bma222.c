@@ -64,6 +64,7 @@
 #include <linux/hwmsensor.h>
 #include <linux/hwmsen_dev.h>
 #include <linux/sensors_io.h>
+#include <cust_bma222.h>
 #include "bma222.h"
 #include <linux/hwmsen_helper.h>
 /*----------------------------------------------------------------------------*/
@@ -80,7 +81,7 @@
 #define BMA222_AXIS_Z          2
 #define BMA222_AXES_NUM        3
 #define BMA222_DATA_LEN        6
-#define BMA222_DEV_NAME        "BMA222"
+#define BMA222_DEV_NAME        CUST_BMA222_DEV_NAME
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------*/
@@ -202,14 +203,14 @@ static void BMA222_power(struct acc_hw *hw, unsigned int on)
 		}
 		else if(on)	// power on
 		{
-			if(!hwPowerOn(hw->power_id, hw->power_vol, "BMA222"))
+			if(!hwPowerOn(hw->power_id, hw->power_vol, BMA222_DEV_NAME))
 			{
 				GSE_ERR("power on fails!!\n");
 			}
 		}
 		else	// power off
 		{
-			if (!hwPowerDown(hw->power_id, "BMA222"))
+			if (!hwPowerDown(hw->power_id, BMA222_DEV_NAME))
 			{
 				GSE_ERR("power off fail!!\n");
 			}			  
@@ -523,14 +524,21 @@ static int BMA222_CheckDeviceID(struct i2c_client *client)
 	}
 	
 
-	if(databuf[0]!=BMA222_FIXED_DEVID)
+	if(databuf[0] != CUST_BMA222_CHIP_ID_0
+#ifdef CUST_BMA222_CHIP_ID_1
+		&& databuf[0] != CUST_BMA222_CHIP_ID_1
+#endif
+#ifdef CUST_BMA222_CHIP_ID_2
+		&& databuf[0] != CUST_BMA222_CHIP_ID_2
+#endif
+		)
 	{
-		printk("BMA222_CheckDeviceID %d failt!\n ", databuf[0]);
+		printk("%s CheckDeviceID %d failt!\n ", BMA222_DEV_NAME, databuf[0]);
 		return BMA222_ERR_IDENTIFICATION;
 	}
 	else
 	{
-		printk("BMA222_CheckDeviceID %d pass!\n ", databuf[0]);
+		printk("%s CheckDeviceID %d pass!\n ", BMA222_DEV_NAME, databuf[0]);
 	}
 
 	exit_BMA222_CheckDeviceID:
@@ -765,7 +773,7 @@ static int BMA222_ReadChipInfo(struct i2c_client *client, char *buf, int bufsize
 		return -2;
 	}
 
-	sprintf(buf, "BMA222 Chip");
+	sprintf(buf, "%s Chip", BMA222_DEV_NAME);
 	return 0;
 }
 /*----------------------------------------------------------------------------*/
@@ -1717,6 +1725,7 @@ static int bma222_probe(struct platform_device *pdev)
 
 	BMA222_power(hw, 1);
 	bma222_force[0] = hw->i2c_num;
+	bma222_force[1] = CUST_BMA222_I2C_SLAVE_WRITE_ADDR;
 	if(i2c_add_driver(&bma222_i2c_driver))
 	{
 		GSE_ERR("add driver error\n");
@@ -1766,5 +1775,5 @@ module_init(bma222_init);
 module_exit(bma222_exit);
 /*----------------------------------------------------------------------------*/
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("BMA222 I2C driver");
+MODULE_DESCRIPTION(CUST_BMA222_DEV_NAME " I2C driver");
 MODULE_AUTHOR("Xiaoli.li@mediatek.com");
