@@ -1774,6 +1774,19 @@ unsigned int get_memory_size (void)
 }
 EXPORT_SYMBOL(get_memory_size) ;
 
+/* CCCI modem layer queries the AP DRAM layout through these accessors. */
+unsigned int get_max_DRAM_size (void)
+{
+    return MAX_PFN + TOTAL_RESERVED_MEM_SIZE ;
+}
+EXPORT_SYMBOL(get_max_DRAM_size) ;
+
+unsigned int get_phys_offset (void)
+{
+    return PHYS_OFFSET ;
+}
+EXPORT_SYMBOL(get_phys_offset) ;
+
 #include <asm/sections.h>
 void get_text_region (unsigned int *s, unsigned int *e)
 {

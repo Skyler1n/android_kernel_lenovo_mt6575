@@ -144,6 +144,30 @@ unsigned int get_chip_hw_subcode(void)
 }
 EXPORT_SYMBOL(get_chip_hw_subcode);
 
+/*
+ * CCCI modem platform accessors consumed by ccci_plat.ko.
+ * A690 is a WCDMA/GSM target with no TD-SCDMA EINT, matching the official
+ * kernel which returns -1 here. The MD GPIO / ADC name lookups are left as
+ * safe not-found stubs until the modem query names are confirmed.
+ */
+int get_td_eint_info(char *eint_name, unsigned int len)
+{
+    return -1;
+}
+EXPORT_SYMBOL(get_td_eint_info);
+
+int get_md_gpio_info(char *gpio_name, unsigned int len)
+{
+    return -1;
+}
+EXPORT_SYMBOL(get_md_gpio_info);
+
+int get_md_adc_info(char *adc_name, unsigned int len)
+{
+    return -1;
+}
+EXPORT_SYMBOL(get_md_adc_info);
+
 CHIP_VER get_chip_eco_ver(void)
 {   
     return DRV_Reg32(APHW_VER);

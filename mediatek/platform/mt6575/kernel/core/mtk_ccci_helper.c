@@ -15,6 +15,69 @@
 #include <linux/proc_fs.h>
 
 /***************************************************************************
+ * CCCI kernel API registration + DRAM info, consumed by ccci_plat.ko/ccci.ko
+ ***************************************************************************/
+#define MAX_REGISTER_API    20
+#define E_NO_EXIST          (-1)
+#define E_PARAM             (-2)
+
+typedef int (*ccci_kern_cb_func_t)(char *buf, unsigned int len);
+typedef struct {
+    unsigned int        id;
+    ccci_kern_cb_func_t func;
+} ccci_kern_func_info;
+
+static ccci_kern_func_info ccci_func_table[MAX_REGISTER_API];
+
+extern int get_dram_info(int *clk, int *type);
+
+int get_dram_type_clk(int *clk, int *type)
+{
+    return get_dram_info(clk, type);
+}
+EXPORT_SYMBOL(get_dram_type_clk);
+
+int register_ccci_kern_func(unsigned int id, ccci_kern_cb_func_t func)
+{
+    if ((id >= MAX_REGISTER_API) || (func == NULL)) {
+        printk("ccci/ctl: invalid parameter(%d)!", id);
+        return E_PARAM;
+    }
+
+    if (ccci_func_table[id].func == NULL) {
+        ccci_func_table[id].id = id;
+        ccci_func_table[id].func = func;
+    } else {
+        printk("ccci/ctl: func%d has registered!", id);
+    }
+
+    return 0;
+}
+EXPORT_SYMBOL(register_ccci_kern_func);
+
+int exec_ccci_kern_func(unsigned int id, char *buf, unsigned int len)
+{
+    ccci_kern_cb_func_t func;
+    int ret = 0;
+
+    if (id >= MAX_REGISTER_API) {
+        printk("ccci/ctl: invalid function id(%d)!", id);
+        return E_PARAM;
+    }
+
+    func = ccci_func_table[id].func;
+    if (func != NULL)
+        ret = func(buf, len);
+    else {
+        ret = E_NO_EXIST;
+        printk("ccci/ctl: func%d not register!", id);
+    }
+
+    return ret;
+}
+EXPORT_SYMBOL(exec_ccci_kern_func);
+
+/***************************************************************************
  * Make device node helper function section
  ***************************************************************************/
 static void* create_dev_class(struct module *owner, const char *name)

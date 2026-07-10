@@ -473,3 +473,61 @@ int __init dram_overclock_init(void)
 }
 
 arch_initcall(dram_overclock_init);
+
+/*
+ * get_dram_info - report DRAM clock (MHz) and type to the CCCI modem layer.
+ * Ported from the MT6575 reference; reads MAINPLL_CON0 and the DRAMC type
+ * strap via the existing get_ddr_type() helper.
+ */
+int get_dram_info(int *clk, int *type)
+{
+    int clock = 0;
+    int pll_con0 = *(volatile unsigned int *)MAINPLL_CON0;
+
+    *type = get_ddr_type();
+
+    if (*type == 2) {
+        switch (pll_con0) {
+        case 0x2760: clock = 260; break;
+        case 0x2860: clock = 267; break;
+        case 0x2960: clock = 273;
+        case 0x2A60: clock = 280; break;
+        case 0x2B60: clock = 286; break;
+        case 0x2C60: clock = 293; break;
+        case 0x2D60: clock = 299; break;
+        default: return -1;
+        }
+    } else if (*type == 1) {
+        switch (pll_con0) {
+        case 0x2460: clock = 192; break;
+        case 0x2560: clock = 198; break;
+        case 0x2660: clock = 203; break;
+        case 0x2760: clock = 208; break;
+        case 0x2860: clock = 213; break;
+        case 0x2960: clock = 218; break;
+        case 0x2A60: clock = 224; break;
+        case 0x2B60: clock = 229; break;
+        case 0x2C60: clock = 234; break;
+        case 0x2D60: clock = 239; break;
+        default: return -1;
+        }
+    } else if (*type == 3) {
+        switch (pll_con0) {
+        case 0x4CA0: clock = 333; break;
+        case 0x4DA0: clock = 338; break;
+        case 0x4EA0: clock = 342; break;
+        case 0x4FA0: clock = 347; break;
+        case 0x50A0: clock = 351; break;
+        case 0x51A0: clock = 355; break;
+        case 0x52A0: clock = 360; break;
+        case 0x53A0: clock = 364; break;
+        case 0x54A0: clock = 368; break;
+        case 0x55A0: clock = 373; break;
+        default: return -1;
+        }
+    }
+    *clk = clock;
+
+    return 0;
+}
+EXPORT_SYMBOL(get_dram_info);
