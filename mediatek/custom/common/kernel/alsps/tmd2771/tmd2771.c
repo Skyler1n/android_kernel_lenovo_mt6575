@@ -65,6 +65,7 @@
 #include <asm/io.h>
 #include <cust_eint.h>
 #include <cust_alsps.h>
+#include <cust_tmd2771.h>
 #include "tmd2771.h"
 /******************************************************************************
  * configuration
@@ -1048,7 +1049,7 @@ static int tmd2771_init_client_for_cali(struct i2c_client *client)
 	}
 
 	databuf[0] = TMD2771_CMM_PPCOUNT;    
-	databuf[1] = 0x0B;//0x02
+	databuf[1] = CUST_TMD2771_PPCOUNT;//0x02
 	res = i2c_master_send(client, databuf, 0x2);
 	if(res <= 0)
 	{
@@ -1057,7 +1058,7 @@ static int tmd2771_init_client_for_cali(struct i2c_client *client)
 	}
 
 	databuf[0] = TMD2771_CMM_CONTROL;    
-	databuf[1] = 0x20;//0x22
+	databuf[1] = CUST_TMD2771_CONTROL;//0x22
 	res = i2c_master_send(client, databuf, 0x2);
 	if(res <= 0)
 	{
@@ -1227,7 +1228,7 @@ static int tmd2771_init_client(struct i2c_client *client)
 
        /*Lenovo-sw chenlj2 add 2011-06-03,modified pulse 2  to 4 */
 	databuf[0] = TMD2771_CMM_PPCOUNT;    
-	databuf[1] = 0x0B;
+	databuf[1] = CUST_TMD2771_PPCOUNT;
 	res = i2c_master_send(client, databuf, 0x2);
 	if(res <= 0)
 	{
@@ -1237,7 +1238,7 @@ static int tmd2771_init_client(struct i2c_client *client)
 
         /*Lenovo-sw chenlj2 add 2011-06-03,modified gain 16  to 1 */
 	databuf[0] = TMD2771_CMM_CONTROL;    
-	databuf[1] = 0x20;
+	databuf[1] = CUST_TMD2771_CONTROL;
 	res = i2c_master_send(client, databuf, 0x2);
 	if(res <= 0)
 	{
