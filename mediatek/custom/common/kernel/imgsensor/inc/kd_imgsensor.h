@@ -144,6 +144,7 @@
 #define HIVICF_SENSOR_ID                        0x0081
 #define HI704_SENSOR_ID                         0x0096
 #define HI351_SENSOR_ID                         0x00A4
+#define HI253_SENSOR_ID                         0x0092
 
 #define IMX058_SENSOR_ID                        0x0058
 #define IMX073_SENSOR_ID                        0x0046
@@ -185,6 +186,7 @@
 #define SENSOR_DRVNAME_MT9V113_YUV    "mt9v113yuv"
 #define SENSOR_DRVNAME_HI704_YUV    	"hi704yuv"
 #define SENSOR_DRVNAME_HI351_YUV     "hi351yuv"
+#define SENSOR_DRVNAME_HI253_YUV     "hi253yuv"
 #define SENSOR_DRVNAME_MT9V114_YUV    "mt9v114"
 #define SENSOR_DRVNAME_MT9T113_YUV    "mt9t113yuv"
 #define SENSOR_DRVNAME_PAS6180_SERIAL_YUV    "pas6180serialyuv"
