@@ -1404,8 +1404,9 @@ static kal_uint32 OV3660GetInfo(MSDK_SCENARIO_ID_ENUM ScenarioId,
 	
 	pSensorInfo->SensroInterfaceType = SENSOR_INTERFACE_TYPE_PARALLEL;
 	pSensorInfo->SensorOutputDataFormat=SENSOR_OUTPUT_FORMAT_YUYV;
-	pSensorInfo->SensorClockPolarity=SENSOR_CLOCK_POLARITY_HIGH;
-	pSensorInfo->SensorClockFallingPolarity=SENSOR_CLOCK_POLARITY_LOW;// TODO:
+	/* A690 stock kernel samples the OV3660 parallel DVP on this edge pair. */
+	pSensorInfo->SensorClockPolarity=SENSOR_CLOCK_POLARITY_LOW;
+	pSensorInfo->SensorClockFallingPolarity=SENSOR_CLOCK_POLARITY_HIGH;
 	pSensorInfo->SensorHsyncPolarity = SENSOR_CLOCK_POLARITY_LOW;
 	pSensorInfo->SensorVsyncPolarity = SENSOR_CLOCK_POLARITY_LOW;
 	pSensorInfo->SensorDriver3D = 0;   // TODO:
