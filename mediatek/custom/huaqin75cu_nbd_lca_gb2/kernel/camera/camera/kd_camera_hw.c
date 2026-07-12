@@ -384,7 +384,7 @@ u32 pinSet[3][8] = {
 
 
 
-          if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_D2, VOL_1800,mode_name))
+          if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_D2, VOL_2800,mode_name)) /* VCAM_IO: stock A60+ HI253 uses 2.8V */
             {
                 PK_DBG("[CAMERA SENSOR] Fail to enable digital power\n");
                 //return -EIO;
@@ -400,7 +400,7 @@ u32 pinSet[3][8] = {
             }                    
 
          
-        if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_D, VOL_1300,mode_name))     
+        if(TRUE != hwPowerOn(CAMERA_POWER_VCAM_D, VOL_1800,mode_name))     /* VCAMD core: stock A60+ HI253 uses 1.8V, not 1.3V */
         {
                  PK_DBG("[CAMERA SENSOR] Fail to enable digital power\n");
             //return -EIO;
