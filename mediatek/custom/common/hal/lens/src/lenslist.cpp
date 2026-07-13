@@ -22,6 +22,10 @@ extern PFUNC_GETLENSDEFAULT pSensorDrive_getDefaultData;
 extern PFUNC_GETLENSDEFAULT pFM50AF_getDefaultData;
 #endif
 
+#if defined(FAKEAF)
+extern PFUNC_GETLENSDEFAULT pFakeAF_getDefaultData;
+#endif
+
 #if defined(MT9P017AF)
 extern PFUNC_GETLENSDEFAULT pMT9P017AF_getDefaultData;
 #endif
@@ -43,6 +47,10 @@ MSDK_LENS_INIT_FUNCTION_STRUCT LensList[MAX_NUM_OF_SUPPORT_LENS] =
 #endif
 
     //  for new added lens, need assign correct SensorID
+#if defined(FAKEAF)
+	{DUMMY_SENSOR_ID, FAKEAF_LENS_ID, "FakeAF", pFakeAF_getDefaultData},
+#endif
+
 #if defined(MT9P017AF)
 	{MT9P017MIPI_SENSOR_ID, MT9P017AF_LENS_ID, "MT9P017AF", pMT9P017AF_getDefaultData},
 #endif
