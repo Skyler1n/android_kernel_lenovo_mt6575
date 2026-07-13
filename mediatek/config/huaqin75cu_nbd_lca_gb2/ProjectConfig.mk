@@ -78,7 +78,7 @@ CUSTOM_HAL_CAMERA = camera
 
 CUSTOM_HAL_EEPROM = dummy_eeprom
 
-CUSTOM_HAL_FLASHLIGHT = constant_flashlight
+CUSTOM_HAL_FLASHLIGHT = dummy_flashlight
 
 # temp solution for custom folder
 CUSTOM_HAL_IMGSENSOR = hi253_yuv
@@ -126,7 +126,7 @@ CUSTOM_KERNEL_DCT = dct
 
 CUSTOM_KERNEL_EEPROM = dummy_eeprom
 
-CUSTOM_KERNEL_FLASHLIGHT = constant_flashlight
+CUSTOM_KERNEL_FLASHLIGHT = dummy_flashlight
 
 CUSTOM_KERNEL_JOGBALL = 
 
